@@ -33,8 +33,8 @@ public class DeviceServices {
     }
 
     public Device measurementUpdate(Device device){
-        logger.info("Updating device measurement...");
         Device entity = this.findById(device.getId());
+        logger.info("Updating device measurement...");
         entity.setMeasurementCH1(device.getMeasurementCH1());
         entity.setMeasurementCH2(device.getMeasurementCH2());
         entity.setLastCH1Status(device.isLastCH1Status());
@@ -44,8 +44,8 @@ public class DeviceServices {
     }
 
     public Device deviceDataUpdate(Device device){
-        logger.info("Updating device data...");
         Device entity = this.findById(device.getId());
+        logger.info("Updating device data...");
         entity.setDeviceName(device.getDeviceName());
         entity.setInstallationName(device.getInstallationName());
         return repository.save(entity);

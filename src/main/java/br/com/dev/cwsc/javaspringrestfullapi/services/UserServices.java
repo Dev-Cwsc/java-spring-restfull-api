@@ -32,8 +32,8 @@ public class UserServices {
     }
 
     public User update(User user){
-        logger.info("Updating user...");
         User entity = this.findById(user.getId());
+        logger.info("Updating user...");
         entity.setLogin(user.getLogin());
         entity.setPassword(user.getPassword());
         return repository.save(entity);
