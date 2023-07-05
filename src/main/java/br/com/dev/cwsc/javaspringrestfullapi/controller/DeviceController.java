@@ -1,5 +1,5 @@
 package br.com.dev.cwsc.javaspringrestfullapi.controller;
-import br.com.dev.cwsc.javaspringrestfullapi.model.Device;
+import br.com.dev.cwsc.javaspringrestfullapi.model.vo.v1.DeviceVO;
 import br.com.dev.cwsc.javaspringrestfullapi.services.DeviceServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -15,28 +15,28 @@ public class DeviceController {
     private DeviceServices services;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Device> findAll(){
+    public List<DeviceVO> findAll(){
         return services.findAll();
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Device findById(@PathVariable(value = "id") Long id){
+    public DeviceVO findById(@PathVariable(value = "id") Long id){
         return services.findById(id);
     }
 
     @PostMapping (consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Device create(@RequestBody Device user){
-        return services.create(user);
+    public DeviceVO create(@RequestBody DeviceVO deviceVO){
+        return services.create(deviceVO);
     }
 
     @PutMapping(value = "/measurement", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Device measurementUpdate(@RequestBody Device device){
-        return services.measurementUpdate(device);
+    public DeviceVO measurementUpdate(@RequestBody DeviceVO deviceVO){
+        return services.measurementUpdate(deviceVO);
     }
 
     @PutMapping(value = "/data", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Device deviceDataUpdate(@RequestBody Device device){
-        return services.deviceDataUpdate(device);
+    public DeviceVO deviceDataUpdate(@RequestBody DeviceVO deviceVO){
+        return services.deviceDataUpdate(deviceVO);
     }
 
     @DeleteMapping(value = "/{id}")

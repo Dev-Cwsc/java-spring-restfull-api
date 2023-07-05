@@ -1,5 +1,5 @@
 package br.com.dev.cwsc.javaspringrestfullapi.controller;
-import br.com.dev.cwsc.javaspringrestfullapi.model.User;
+import br.com.dev.cwsc.javaspringrestfullapi.model.vo.v1.UserVO;
 import br.com.dev.cwsc.javaspringrestfullapi.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -15,23 +15,23 @@ public class UserController {
     private UserServices services;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<User> findAll(){
+    public List<UserVO> findAll(){
         return services.findAll();
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public User findById(@PathVariable(value = "id") Long id){
+    public UserVO findById(@PathVariable(value = "id") Long id){
         return services.findById(id);
     }
 
     @PostMapping (consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public User create(@RequestBody User user){
-        return services.create(user);
+    public UserVO create(@RequestBody UserVO userVO){
+        return services.create(userVO);
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public User update(@RequestBody User user){
-        return services.update(user);
+    public UserVO update(@RequestBody UserVO userVO){
+        return services.update(userVO);
     }
 
     @DeleteMapping(value = "/{id}")

@@ -9,7 +9,6 @@ import java.util.Objects;
 @Entity
 @Table(name = "device")
 public class Device implements Serializable {
-
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -17,7 +16,7 @@ public class Device implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false, name = "device_name")
+    @Column(nullable = false, name = "device_name", unique = true)
     private String deviceName;
 
     @Column(nullable = false, name = "installation_name")
@@ -38,8 +37,68 @@ public class Device implements Serializable {
     @Column(name = "last_update")
     private Date lastUpdate;
 
-    public Device() {
+    public long getId() {
+        return id;
+    }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getDeviceName() {
+        return deviceName;
+    }
+
+    public void setDeviceName(String deviceName) {
+        this.deviceName = deviceName;
+    }
+
+    public String getInstallationName() {
+        return installationName;
+    }
+
+    public void setInstallationName(String installationName) {
+        this.installationName = installationName;
+    }
+
+    public double getMeasurementCH1() {
+        return measurementCH1;
+    }
+
+    public void setMeasurementCH1(double measurementCH1) {
+        this.measurementCH1 = measurementCH1;
+    }
+
+    public double getMeasurementCH2() {
+        return measurementCH2;
+    }
+
+    public void setMeasurementCH2(double measurementCH2) {
+        this.measurementCH2 = measurementCH2;
+    }
+
+    public boolean isLastCH1Status() {
+        return lastCH1Status;
+    }
+
+    public void setLastCH1Status(boolean lastCH1Status) {
+        this.lastCH1Status = lastCH1Status;
+    }
+
+    public boolean isLastCH2Status() {
+        return lastCH2Status;
+    }
+
+    public void setLastCH2Status(boolean lastCH2Status) {
+        this.lastCH2Status = lastCH2Status;
+    }
+
+    public Date getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(Date lastUpdate) {
+        this.lastUpdate = lastUpdate;
     }
 
     @Override
@@ -47,71 +106,11 @@ public class Device implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Device device = (Device) o;
-        return getId() == device.getId() && Objects.equals(getDeviceName(), device.getDeviceName()) && Objects.equals(getInstallationName(), device.getInstallationName());
+        return getId() == device.getId() && Double.compare(device.getMeasurementCH1(), getMeasurementCH1()) == 0 && Double.compare(device.getMeasurementCH2(), getMeasurementCH2()) == 0 && isLastCH1Status() == device.isLastCH1Status() && isLastCH2Status() == device.isLastCH2Status() && Objects.equals(getDeviceName(), device.getDeviceName()) && Objects.equals(getInstallationName(), device.getInstallationName()) && Objects.equals(getLastUpdate(), device.getLastUpdate());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getDeviceName(), getInstallationName());
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getDeviceName() {
-        return deviceName;
-    }
-
-    public String getInstallationName() {
-        return installationName;
-    }
-
-    public double getMeasurementCH1() {
-        return measurementCH1;
-    }
-
-    public double getMeasurementCH2() {
-        return measurementCH2;
-    }
-
-    public boolean isLastCH1Status() {
-        return lastCH1Status;
-    }
-
-    public boolean isLastCH2Status() {
-        return lastCH2Status;
-    }
-
-    public Date getLastUpdate() {
-        return lastUpdate;
-    }
-
-    public void setDeviceName(String deviceName) {
-        this.deviceName = deviceName;
-    }
-
-    public void setInstallationName(String installationName) {
-        this.installationName = installationName;
-    }
-
-    public void setMeasurementCH1(double measurementCH1) {
-        this.measurementCH1 = measurementCH1;
-    }
-
-    public void setMeasurementCH2(double measurementCH2) {
-        this.measurementCH2 = measurementCH2;
-    }
-
-    public void setLastCH1Status(boolean lastCH1Status) {
-        this.lastCH1Status = lastCH1Status;
-    }
-
-    public void setLastCH2Status(boolean lastCH2Status) {
-        this.lastCH2Status = lastCH2Status;
-    }
-
-    public void setLastUpdate(Date lastUpdate) {
-        this.lastUpdate = lastUpdate;
+        return Objects.hash(getId(), getDeviceName(), getInstallationName(), getMeasurementCH1(), getMeasurementCH2(), isLastCH1Status(), isLastCH2Status(), getLastUpdate());
     }
 }

@@ -1,6 +1,8 @@
 package br.com.dev.cwsc.javaspringrestfullapi.services;
 
+import br.com.dev.cwsc.javaspringrestfullapi.model.vo.v1.DeviceVO;
 import br.com.dev.cwsc.javaspringrestfullapi.exceptions.ResourceNotFoundException;
+import br.com.dev.cwsc.javaspringrestfullapi.mapper.DeviceMapper;
 import br.com.dev.cwsc.javaspringrestfullapi.model.Device;
 import br.com.dev.cwsc.javaspringrestfullapi.repositories.DeviceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,46 +16,50 @@ public class DeviceServices {
     private final Logger logger = Logger.getLogger(UserServices.class.getName());
 
     @Autowired
-    DeviceRepository repository;
+    private DeviceRepository repository;
 
-    public List<Device> findAll(){
+    @Autowired
+    private DeviceMapper mapper;
+
+    public List<DeviceVO> findAll(){
         logger.info("Finding all devices...");
-        return repository.findAll();
+        return mapper.deviceEntityListToDeviceVOList(repository.findAll());
     }
 
-    public Device findById(Long id){
+    public DeviceVO findById(Long id){
         logger.info("Finding one device...");
-        return repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
+        return mapper.deviceEntityToDeviceVO(repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!")));
     }
 
-    public Device create(Device device){
+    public DeviceVO create(DeviceVO deviceVO){
         logger.info("Creating new device...");
-        return repository.save(device);
+        Device entity = mapper.deviceVOToDeviceEntity(deviceVO);
+        return mapper.deviceEntityToDeviceVO(repository.save(entity));
     }
 
-    public Device measurementUpdate(Device device){
-        Device entity = this.findById(device.getId());
+    public DeviceVO measurementUpdate(DeviceVO deviceVO){
+        Device entity = mapper.deviceVOToDeviceEntity(this.findById(deviceVO.getId()));
         logger.info("Updating device measurement...");
-        entity.setMeasurementCH1(device.getMeasurementCH1());
-        entity.setMeasurementCH2(device.getMeasurementCH2());
-        entity.setLastCH1Status(device.isLastCH1Status());
-        entity.setLastCH2Status(device.isLastCH2Status());
+        entity.setMeasurementCH1(deviceVO.getMeasurementCH1());
+        entity.setMeasurementCH2(deviceVO.getMeasurementCH2());
+        entity.setLastCH1Status(deviceVO.isCH1Status());
+        entity.setLastCH2Status(deviceVO.isCH2Status());
         entity.setLastUpdate(new Date());
-        return repository.save(entity);
+        return mapper.deviceEntityToDeviceVO(repository.save(entity));
     }
 
-    public Device deviceDataUpdate(Device device){
-        Device entity = this.findById(device.getId());
+    public DeviceVO deviceDataUpdate(DeviceVO deviceVO){
+        Device entity = mapper.deviceVOToDeviceEntity(deviceVO);
         logger.info("Updating device data...");
-        entity.setDeviceName(device.getDeviceName());
-        entity.setInstallationName(device.getInstallationName());
-        return repository.save(entity);
+        entity.setDeviceName(deviceVO.getDevice());
+        entity.setInstallationName(deviceVO.getInstallation());
+        return mapper.deviceEntityToDeviceVO(repository.save(entity));
     }
 
     public void delete(Long id){
         logger.info("Deleting device...");
-        Device entity = this.findById(id);
+        Device entity = mapper.deviceVOToDeviceEntity(this.findById(id));
         repository.delete(entity);
     }
 }

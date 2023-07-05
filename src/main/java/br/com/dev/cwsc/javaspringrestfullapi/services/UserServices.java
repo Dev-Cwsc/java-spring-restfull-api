@@ -1,8 +1,11 @@
 package br.com.dev.cwsc.javaspringrestfullapi.services;
 
+import br.com.dev.cwsc.javaspringrestfullapi.model.vo.v1.UserVO;
 import br.com.dev.cwsc.javaspringrestfullapi.exceptions.ResourceNotFoundException;
+import br.com.dev.cwsc.javaspringrestfullapi.mapper.UserMapper;
 import br.com.dev.cwsc.javaspringrestfullapi.model.User;
 import br.com.dev.cwsc.javaspringrestfullapi.repositories.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,35 +16,39 @@ public class UserServices {
     private final Logger logger = Logger.getLogger(UserServices.class.getName());
 
     @Autowired
-    UserRepository repository;
+    private UserRepository repository;
 
-    public List<User> findAll(){
+    @Autowired
+    private UserMapper mapper;
+
+    public List<UserVO> findAll(){
         logger.info("Finding all users...");
-        return repository.findAll();
+        return mapper.userEntityListToUserVOList(repository.findAll());
     }
 
-    public User findById(Long id){
+    public UserVO findById(Long id){
         logger.info("Finding one user...");
-        return repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
+        return mapper.userEntityToUserVO(repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!")));
     }
 
-    public User create(User user){
+    public UserVO create(UserVO userVO){
         logger.info("Creating user...");
-        return repository.save(user);
+        User entity = mapper.userVOToUserEntity(userVO);
+        return mapper.userEntityToUserVO(repository.save(entity));
     }
 
-    public User update(User user){
-        User entity = this.findById(user.getId());
+    public UserVO update(UserVO userVO){
+        User entity = mapper.userVOToUserEntity(this.findById(userVO.getId()));
         logger.info("Updating user...");
-        entity.setLogin(user.getLogin());
-        entity.setPassword(user.getPassword());
-        return repository.save(entity);
+        entity.setLogin(userVO.getUserLogin());
+        entity.setPassword(userVO.getUserPassword());
+        return mapper.userEntityToUserVO(repository.save(entity));
     }
 
     public void delete(Long id){
         logger.info("Deleting user...");
-        User entity = this.findById(id);
+        User entity = mapper.userVOToUserEntity(this.findById(id));
         repository.delete(entity);
     }
 }
