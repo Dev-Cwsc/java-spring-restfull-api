@@ -1,4 +1,4 @@
-package br.com.dev.cwsc.javaspringrestfullapi.utils;
+package br.com.dev.cwsc.javaspringrestfullapi.util;
 
 import br.com.dev.cwsc.javaspringrestfullapi.model.Device;
 import br.com.dev.cwsc.javaspringrestfullapi.model.User;
