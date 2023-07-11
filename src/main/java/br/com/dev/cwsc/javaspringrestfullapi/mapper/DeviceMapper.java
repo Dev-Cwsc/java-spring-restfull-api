@@ -9,6 +9,8 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface DeviceMapper {
+
+    @Mapping(source = "id", target = "key")
     @Mapping(source = "deviceName", target = "device")
     @Mapping(source = "installationName", target = "installation")
     @Mapping(source = "lastCH1Status", target = "CH1Status")
@@ -16,6 +18,7 @@ public interface DeviceMapper {
     @Mapping(source = "lastUpdate", target = "updateTime")
     DeviceVO deviceEntityToDeviceVO(Device device);
 
+    @Mapping(source = "key", target = "id")
     @Mapping(source = "device", target = "deviceName")
     @Mapping(source = "installation", target = "installationName")
     @Mapping(source = "CH1Status", target = "lastCH1Status")

@@ -1,14 +1,21 @@
 package br.com.dev.cwsc.javaspringrestfullapi.model.vo.v1;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import org.springframework.hateoas.RepresentationModel;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-public class DeviceVO implements Serializable {
+@JsonPropertyOrder({"id", "device", "installation", "measurementCH1", "measurementCH2", "CH1Status", "CH2Status", "updateTime"})
+public class DeviceVO extends RepresentationModel<DeviceVO> implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    private long id;
+
+    @JsonProperty("id")
+    private long key;
     private String device;
     private String installation;
     private double measurementCH1;
@@ -17,12 +24,12 @@ public class DeviceVO implements Serializable {
     private boolean CH2Status;
     private Date updateTime;
 
-    public long getId() {
-        return id;
+    public long getKey() {
+        return key;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setKey(long key) {
+        this.key = key;
     }
 
     public String getDevice() {
@@ -86,11 +93,15 @@ public class DeviceVO implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DeviceVO deviceVO = (DeviceVO) o;
-        return getId() == deviceVO.getId() && Double.compare(deviceVO.getMeasurementCH1(), getMeasurementCH1()) == 0 && Double.compare(deviceVO.getMeasurementCH2(), getMeasurementCH2()) == 0 && isCH1Status() == deviceVO.isCH1Status() && isCH2Status() == deviceVO.isCH2Status() && Objects.equals(getDevice(), deviceVO.getDevice()) && Objects.equals(getInstallation(), deviceVO.getInstallation()) && Objects.equals(getUpdateTime(), deviceVO.getUpdateTime());
+        return getKey() == deviceVO.getKey() && Double.compare(deviceVO.getMeasurementCH1(),
+                getMeasurementCH1()) == 0 && Double.compare(deviceVO.getMeasurementCH2(),
+                getMeasurementCH2()) == 0 && isCH1Status() == deviceVO.isCH1Status() && isCH2Status() == deviceVO.isCH2Status() && Objects.equals(getDevice(),
+                deviceVO.getDevice()) && Objects.equals(getInstallation(),
+                deviceVO.getInstallation()) && Objects.equals(getUpdateTime(), deviceVO.getUpdateTime());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getDevice(), getInstallation(), getMeasurementCH1(), getMeasurementCH2(), isCH1Status(), isCH2Status(), getUpdateTime());
+        return Objects.hash(getKey(), getDevice(), getInstallation(), getMeasurementCH1(), getMeasurementCH2(), isCH1Status(), isCH2Status(), getUpdateTime());
     }
 }

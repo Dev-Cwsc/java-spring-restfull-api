@@ -1,5 +1,6 @@
 package br.com.dev.cwsc.javaspringrestfullapi.services;
 
+import br.com.dev.cwsc.javaspringrestfullapi.controller.UserController;
 import br.com.dev.cwsc.javaspringrestfullapi.model.vo.v1.UserVO;
 import br.com.dev.cwsc.javaspringrestfullapi.exceptions.ResourceNotFoundException;
 import br.com.dev.cwsc.javaspringrestfullapi.mapper.UserMapper;
@@ -7,10 +8,13 @@ import br.com.dev.cwsc.javaspringrestfullapi.model.User;
 import br.com.dev.cwsc.javaspringrestfullapi.repositories.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.logging.Logger;
+
 @Service // Annotation do Spring. Sinaliza que o objeto pode ser injetado em tempo de execução (não é necessário instanciar)
 public class UserServices {
     private final Logger logger = Logger.getLogger(UserServices.class.getName());
@@ -23,27 +27,37 @@ public class UserServices {
 
     public List<UserVO> findAll(){
         logger.info("Finding all users...");
-        return mapper.userEntityListToUserVOList(repository.findAll());
+        List<UserVO> userVOs = mapper.userEntityListToUserVOList(repository.findAll());
+        userVOs.forEach( // Adiciona um link de caminho para o próprio objeto (HATEOAS)
+                u -> u.add(linkTo(methodOn(UserController.class).findById(u.getKey())).withSelfRel())
+        );
+        return userVOs;
     }
 
     public UserVO findById(Long id){
         logger.info("Finding one user...");
-        return mapper.userEntityToUserVO(repository.findById(id)
+        UserVO vo = mapper.userEntityToUserVO(repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!")));
+        vo.add(linkTo(methodOn(UserController.class).findById(id)).withSelfRel());
+        return vo;
     }
 
     public UserVO create(UserVO userVO){
         logger.info("Creating user...");
         User entity = mapper.userVOToUserEntity(userVO);
-        return mapper.userEntityToUserVO(repository.save(entity));
+        UserVO vo = mapper.userEntityToUserVO(repository.save(entity));
+        vo.add(linkTo(methodOn(UserController.class).findById(vo.getKey())).withSelfRel());
+        return vo;
     }
 
     public UserVO update(UserVO userVO){
-        User entity = mapper.userVOToUserEntity(this.findById(userVO.getId()));
+        User entity = mapper.userVOToUserEntity(this.findById(userVO.getKey()));
         logger.info("Updating user...");
         entity.setLogin(userVO.getUserLogin());
         entity.setPassword(userVO.getUserPassword());
-        return mapper.userEntityToUserVO(repository.save(entity));
+        UserVO vo = mapper.userEntityToUserVO(repository.save(entity));
+        vo.add(linkTo(methodOn(UserController.class).findById(vo.getKey())).withSelfRel());
+        return vo;
     }
 
     public void delete(Long id){

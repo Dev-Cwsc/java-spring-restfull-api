@@ -1,22 +1,29 @@
 package br.com.dev.cwsc.javaspringrestfullapi.model.vo.v1;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import org.springframework.hateoas.RepresentationModel;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class UserVO implements Serializable {
+@JsonPropertyOrder({"id", "userLogin", "userPassword"}) // Define a ordem na qual os atributos do objeto aparecem
+public class UserVO extends RepresentationModel<UserVO> implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    private Long id;
+
+    @JsonProperty("id") // Renomeia o atributo exibido no objeto
+    private Long key;
     private String userLogin;
     private String userPassword;
 
-    public Long getId() {
-        return id;
+    public Long getKey() {
+        return key;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setKey(Long key) {
+        this.key = key;
     }
 
     public String getUserLogin() {
@@ -39,12 +46,13 @@ public class UserVO implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         UserVO userVO = (UserVO) o;
-        return Objects.equals(getId(), userVO.getId()) && Objects.equals(getUserLogin(), userVO.getUserLogin()) && Objects.equals(getUserPassword(), userVO.getUserPassword());
+        return Objects.equals(getKey(), userVO.getKey()) && Objects.equals(getUserLogin(), userVO.getUserLogin()) && Objects.equals(getUserPassword(), userVO.getUserPassword());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getUserLogin(), getUserPassword());
+        return Objects.hash(super.hashCode(), getKey(), getUserLogin(), getUserPassword());
     }
 }
