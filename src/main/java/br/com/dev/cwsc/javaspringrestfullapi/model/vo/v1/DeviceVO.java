@@ -15,7 +15,7 @@ public class DeviceVO extends RepresentationModel<DeviceVO> implements Serializa
     private static final long serialVersionUID = 1L;
 
     @JsonProperty("id")
-    private long key;
+    private Long key;
     private String device;
     private String installation;
     private double measurementCH1;
@@ -24,11 +24,11 @@ public class DeviceVO extends RepresentationModel<DeviceVO> implements Serializa
     private boolean CH2Status;
     private Date updateTime;
 
-    public long getKey() {
+    public Long getKey() {
         return key;
     }
 
-    public void setKey(long key) {
+    public void setKey(Long key) {
         this.key = key;
     }
 

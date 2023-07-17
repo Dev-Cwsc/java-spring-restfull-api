@@ -1,7 +1,7 @@
 package br.com.dev.cwsc.javaspringrestfullapi.services;
 
 import br.com.dev.cwsc.javaspringrestfullapi.controller.DeviceController;
-import br.com.dev.cwsc.javaspringrestfullapi.controller.UserController;
+import br.com.dev.cwsc.javaspringrestfullapi.exceptions.RequiredObjectIsNullException;
 import br.com.dev.cwsc.javaspringrestfullapi.model.vo.v1.DeviceVO;
 import br.com.dev.cwsc.javaspringrestfullapi.exceptions.ResourceNotFoundException;
 import br.com.dev.cwsc.javaspringrestfullapi.mapper.DeviceMapper;
@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-@Service // Annotation do Spring. Sinaliza que o objeto pode ser injetado em tempo de execução (não é necessário instanciar)
+@Service
 public class DeviceServices {
     private final Logger logger = Logger.getLogger(UserServices.class.getName());
 
@@ -29,59 +29,79 @@ public class DeviceServices {
 
     public List<DeviceVO> findAll(){
         logger.info("Finding all devices...");
+
         List<DeviceVO> deviceVOs = mapper.deviceEntityListToDeviceVOList(repository.findAll());
+
         deviceVOs.forEach(
-                d -> {
-                    d.add(linkTo(methodOn(DeviceController.class).findById(d.getKey())).withSelfRel());
-                    d.add(linkTo(methodOn(DeviceController.class).measurementUpdate(d)).withRel("measurement-update"));
-                    d.add(linkTo(methodOn(DeviceController.class).deviceDataUpdate(d)).withRel("data-update"));
-                }
+                this::addLinks
         );
         return deviceVOs;
     }
 
     public DeviceVO findById(Long id){
         logger.info("Finding one device...");
-        return getDeviceVO(repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!")));
+
+        Device entity = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
+
+        DeviceVO vo = mapper.deviceEntityToDeviceVO(entity);
+        addLinks(vo);
+        return vo;
     }
 
     public DeviceVO create(DeviceVO deviceVO){
+        if (deviceVO == null) throw new RequiredObjectIsNullException();
+
         logger.info("Creating new device...");
-        Device entity = mapper.deviceVOToDeviceEntity(deviceVO);
-        return getDeviceVO(entity);
+
+        DeviceVO vo = mapper.deviceEntityToDeviceVO(repository.save(mapper.deviceVOToDeviceEntity(deviceVO)));
+        addLinks(vo);
+        return vo;
     }
 
     public DeviceVO measurementUpdate(DeviceVO deviceVO){
+        if (deviceVO == null) throw new RequiredObjectIsNullException();
+
         Device entity = mapper.deviceVOToDeviceEntity(this.findById(deviceVO.getKey()));
         logger.info("Updating device measurement...");
+
         entity.setMeasurementCH1(deviceVO.getMeasurementCH1());
         entity.setMeasurementCH2(deviceVO.getMeasurementCH2());
         entity.setLastCH1Status(deviceVO.isCH1Status());
         entity.setLastCH2Status(deviceVO.isCH2Status());
         entity.setLastUpdate(new Date());
-        return getDeviceVO(entity);
+
+        DeviceVO vo = mapper.deviceEntityToDeviceVO(repository.save(entity));
+        addLinks(vo);
+        return vo;
     }
 
     public DeviceVO deviceDataUpdate(DeviceVO deviceVO){
+        if (deviceVO == null) throw new RequiredObjectIsNullException();
+
         Device entity = mapper.deviceVOToDeviceEntity(deviceVO);
         logger.info("Updating device data...");
+
         entity.setDeviceName(deviceVO.getDevice());
         entity.setInstallationName(deviceVO.getInstallation());
-        return getDeviceVO(entity);
+
+        DeviceVO vo = mapper.deviceEntityToDeviceVO(repository.save(entity));
+        addLinks(vo);
+        return vo;
     }
 
     public void delete(Long id){
         logger.info("Deleting device...");
-        Device entity = mapper.deviceVOToDeviceEntity(this.findById(id));
+
+        Device entity = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
+
         repository.delete(entity);
     }
 
-    private DeviceVO getDeviceVO(Device entity) {
-        DeviceVO vo = mapper.deviceEntityToDeviceVO(repository.save(entity));
+    private void addLinks(DeviceVO vo){
         vo.add(linkTo(methodOn(DeviceController.class).findById(vo.getKey())).withSelfRel());
         vo.add(linkTo(methodOn(DeviceController.class).measurementUpdate(vo)).withRel("measurement-update"));
         vo.add(linkTo(methodOn(DeviceController.class).deviceDataUpdate(vo)).withRel("data-update"));
-        return vo;
     }
 }
