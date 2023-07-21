@@ -1,4 +1,4 @@
-package br.com.dev.cwsc.javaspringrestfullapi.services.unittests.mapper.model;
+package br.com.dev.cwsc.javaspringrestfullapi.unittests.mapper.model;
 
 import br.com.dev.cwsc.javaspringrestfullapi.model.User;
 import br.com.dev.cwsc.javaspringrestfullapi.model.vo.v1.UserVO;

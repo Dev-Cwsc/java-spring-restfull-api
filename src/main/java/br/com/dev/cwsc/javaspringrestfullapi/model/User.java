@@ -13,7 +13,8 @@ public class User implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id // Esse atributo é a chave primária da tabela user
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Especifica que o id deve ser autoincrementado a cada persistência no banco
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // Especifica que o id deve ser autoincrementado a cada persistência no banco
     private long id;
 
     @Column(nullable = false, unique = true) // O valor dessa coluna no banco de dados não pode ser nulo e nem repetido

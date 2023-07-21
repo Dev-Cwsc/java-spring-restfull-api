@@ -1,4 +1,5 @@
 package br.com.dev.cwsc.javaspringrestfullapi.model;
+
 import jakarta.persistence.*;
 
 import java.io.Serial;

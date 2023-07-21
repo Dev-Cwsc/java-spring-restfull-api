@@ -6,9 +6,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter;
 
 public class YamlJackson2HttpMessageConverter extends AbstractJackson2HttpMessageConverter {
-    public YamlJackson2HttpMessageConverter(){
+    public YamlJackson2HttpMessageConverter() {
         super(new YAMLMapper().setSerializationInclusion(
-                JsonInclude.Include.NON_NULL), // Impede que os campos do objetos sejam serializados como NULL
+                        JsonInclude.Include.NON_NULL), // Impede que os campos do objetos sejam serializados como NULL
                 MediaType.parseMediaType("application/x-yaml")
         );
     }

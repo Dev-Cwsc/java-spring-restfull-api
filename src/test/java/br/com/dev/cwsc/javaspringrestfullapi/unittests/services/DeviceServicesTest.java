@@ -1,4 +1,4 @@
-package br.com.dev.cwsc.javaspringrestfullapi.services.unittests.services;
+package br.com.dev.cwsc.javaspringrestfullapi.unittests.services;
 
 import br.com.dev.cwsc.javaspringrestfullapi.exceptions.RequiredObjectIsNullException;
 import br.com.dev.cwsc.javaspringrestfullapi.mapper.DeviceMapper;
@@ -6,7 +6,7 @@ import br.com.dev.cwsc.javaspringrestfullapi.model.Device;
 import br.com.dev.cwsc.javaspringrestfullapi.model.vo.v1.DeviceVO;
 import br.com.dev.cwsc.javaspringrestfullapi.repositories.DeviceRepository;
 import br.com.dev.cwsc.javaspringrestfullapi.services.DeviceServices;
-import br.com.dev.cwsc.javaspringrestfullapi.services.unittests.mapper.model.MockDevice;
+import br.com.dev.cwsc.javaspringrestfullapi.unittests.mapper.model.MockDevice;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

@@ -2,10 +2,10 @@ package br.com.dev.cwsc.javaspringrestfullapi.services;
 
 import br.com.dev.cwsc.javaspringrestfullapi.controller.DeviceController;
 import br.com.dev.cwsc.javaspringrestfullapi.exceptions.RequiredObjectIsNullException;
-import br.com.dev.cwsc.javaspringrestfullapi.model.vo.v1.DeviceVO;
 import br.com.dev.cwsc.javaspringrestfullapi.exceptions.ResourceNotFoundException;
 import br.com.dev.cwsc.javaspringrestfullapi.mapper.DeviceMapper;
 import br.com.dev.cwsc.javaspringrestfullapi.model.Device;
+import br.com.dev.cwsc.javaspringrestfullapi.model.vo.v1.DeviceVO;
 import br.com.dev.cwsc.javaspringrestfullapi.repositories.DeviceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,7 @@ public class DeviceServices {
     @Autowired
     private DeviceMapper mapper;
 
-    public List<DeviceVO> findAll(){
+    public List<DeviceVO> findAll() {
         logger.info("Finding all devices...");
 
         List<DeviceVO> deviceVOs = mapper.deviceEntityListToDeviceVOList(repository.findAll());
@@ -38,7 +38,7 @@ public class DeviceServices {
         return deviceVOs;
     }
 
-    public DeviceVO findById(Long id){
+    public DeviceVO findById(Long id) {
         logger.info("Finding one device...");
 
         Device entity = repository.findById(id)
@@ -49,7 +49,7 @@ public class DeviceServices {
         return vo;
     }
 
-    public DeviceVO create(DeviceVO deviceVO){
+    public DeviceVO create(DeviceVO deviceVO) {
         if (deviceVO == null) throw new RequiredObjectIsNullException();
 
         logger.info("Creating new device...");
@@ -59,7 +59,7 @@ public class DeviceServices {
         return vo;
     }
 
-    public DeviceVO measurementUpdate(DeviceVO deviceVO){
+    public DeviceVO measurementUpdate(DeviceVO deviceVO) {
         if (deviceVO == null) throw new RequiredObjectIsNullException();
 
         Device entity = mapper.deviceVOToDeviceEntity(this.findById(deviceVO.getKey()));
@@ -76,7 +76,7 @@ public class DeviceServices {
         return vo;
     }
 
-    public DeviceVO deviceDataUpdate(DeviceVO deviceVO){
+    public DeviceVO deviceDataUpdate(DeviceVO deviceVO) {
         if (deviceVO == null) throw new RequiredObjectIsNullException();
 
         Device entity = mapper.deviceVOToDeviceEntity(deviceVO);
@@ -90,7 +90,7 @@ public class DeviceServices {
         return vo;
     }
 
-    public void delete(Long id){
+    public void delete(Long id) {
         logger.info("Deleting device...");
 
         Device entity = repository.findById(id)
@@ -99,7 +99,7 @@ public class DeviceServices {
         repository.delete(entity);
     }
 
-    private void addLinks(DeviceVO vo){
+    private void addLinks(DeviceVO vo) {
         vo.add(linkTo(methodOn(DeviceController.class).findById(vo.getKey())).withSelfRel());
         vo.add(linkTo(methodOn(DeviceController.class).measurementUpdate(vo)).withRel("measurement-update"));
         vo.add(linkTo(methodOn(DeviceController.class).deviceDataUpdate(vo)).withRel("data-update"));

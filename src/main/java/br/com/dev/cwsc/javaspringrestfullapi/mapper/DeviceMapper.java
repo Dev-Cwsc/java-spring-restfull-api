@@ -1,7 +1,7 @@
 package br.com.dev.cwsc.javaspringrestfullapi.mapper;
 
-import br.com.dev.cwsc.javaspringrestfullapi.model.vo.v1.DeviceVO;
 import br.com.dev.cwsc.javaspringrestfullapi.model.Device;
+import br.com.dev.cwsc.javaspringrestfullapi.model.vo.v1.DeviceVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

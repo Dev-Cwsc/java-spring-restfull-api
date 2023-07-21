@@ -16,19 +16,19 @@ public class WebConfig implements WebMvcConfigurer {
 
     // Adiciona o conversor de tipo para yaml
     @Override
-    public void extendMessageConverters(List<HttpMessageConverter<?>> converters){
+    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
         converters.add(new YamlJackson2HttpMessageConverter());
     }
 
     // Define quais os tipos de arquivos suportados pela API
     @Override
-    public void configureContentNegotiation(ContentNegotiationConfigurer configurer){
+    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
         configurer.favorParameter(false)
-        .ignoreAcceptHeader(false)
-        .useRegisteredExtensionsOnly(false)
-        .defaultContentType(MediaType.APPLICATION_JSON)
-            .mediaType("json", MediaType.APPLICATION_JSON)
-            .mediaType("xml", MediaType.APPLICATION_XML)
-            .mediaType("x-yaml", MEDIA_TYPE_APPLICATION_YAML);
+                .ignoreAcceptHeader(false)
+                .useRegisteredExtensionsOnly(false)
+                .defaultContentType(MediaType.APPLICATION_JSON)
+                .mediaType("json", MediaType.APPLICATION_JSON)
+                .mediaType("xml", MediaType.APPLICATION_XML)
+                .mediaType("x-yaml", MEDIA_TYPE_APPLICATION_YAML);
     }
 }

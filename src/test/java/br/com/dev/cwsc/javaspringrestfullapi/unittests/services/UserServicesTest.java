@@ -1,4 +1,4 @@
-package br.com.dev.cwsc.javaspringrestfullapi.services.unittests.services;
+package br.com.dev.cwsc.javaspringrestfullapi.unittests.services;
 
 import br.com.dev.cwsc.javaspringrestfullapi.exceptions.RequiredObjectIsNullException;
 import br.com.dev.cwsc.javaspringrestfullapi.mapper.UserMapper;
@@ -6,7 +6,7 @@ import br.com.dev.cwsc.javaspringrestfullapi.model.User;
 import br.com.dev.cwsc.javaspringrestfullapi.model.vo.v1.UserVO;
 import br.com.dev.cwsc.javaspringrestfullapi.repositories.UserRepository;
 import br.com.dev.cwsc.javaspringrestfullapi.services.UserServices;
-import br.com.dev.cwsc.javaspringrestfullapi.services.unittests.mapper.model.MockUser;
+import br.com.dev.cwsc.javaspringrestfullapi.unittests.mapper.model.MockUser;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
