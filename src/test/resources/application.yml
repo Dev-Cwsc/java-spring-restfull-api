@@ -1,3 +1,5 @@
+cors:
+  originPatterns: http://localhost:3000,http://localhost:8080,testDeviceScript
 spring:
   datasource: # No arquivo de testes não é necessário especificar a URL e credenciais.
     driver-class-name: com.mysql.cj.jdbc.Driver # Essas informações são geradas automaticamente em tempo de execução pelo TestContainers
