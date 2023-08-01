@@ -53,7 +53,7 @@ class UserServicesTest {
         UserVO vo = new UserVO();
         vo.setKey(entity.getId());
         vo.setUserPassword(entity.getPassword());
-        vo.setUserLogin(entity.getLogin());
+        vo.setUserName(entity.getUserName());
 
         // Quando o service chamar o método findById, o mockito irá retornar o mock entity declarado acima
         when(repository.findById(entity.getId())).thenReturn(Optional.of(entity));
@@ -64,7 +64,7 @@ class UserServicesTest {
         // Verifica se os campos não estão nulos
         assertNotNull(result);
         assertNotNull(result.getKey());
-        assertNotNull(result.getUserLogin());
+        assertNotNull(result.getUserName());
         assertNotNull(result.getUserPassword());
         assertNotNull(result.getLinks());
 
@@ -72,7 +72,7 @@ class UserServicesTest {
         assertTrue(result.toString().contains("links: [</user/1>;rel=\"self\"]"));
 
         // Verifica se os campos são iguais ao esperado
-        assertEquals("testLogin1", result.getUserLogin());
+        assertEquals("testLogin1", result.getUserName());
         assertEquals("#testPass1231", result.getUserPassword());
     }
 
@@ -92,47 +92,47 @@ class UserServicesTest {
 
         // Verifica alguns elementos aleatórios para garantir que foram gerados corretamente
         assertNotNull(result.get(0).getKey());
-        assertNotNull(result.get(0).getUserLogin());
+        assertNotNull(result.get(0).getUserName());
         assertNotNull(result.get(0).getUserPassword());
         assertNotNull(result.get(0).getLinks());
         assertEquals(0, result.get(0).getKey());
-        assertEquals("testLogin0", result.get(0).getUserLogin());
+        assertEquals("testLogin0", result.get(0).getUserName());
         assertEquals("#testPass1230", result.get(0).getUserPassword());
         assertTrue(result.get(0).getLinks().toString().contains("</user/0>;rel=\"self\""));
 
         assertNotNull(result.get(4).getKey());
-        assertNotNull(result.get(4).getUserLogin());
+        assertNotNull(result.get(4).getUserName());
         assertNotNull(result.get(4).getUserPassword());
         assertNotNull(result.get(4).getLinks());
         assertEquals(4, result.get(4).getKey());
-        assertEquals("testLogin4", result.get(4).getUserLogin());
+        assertEquals("testLogin4", result.get(4).getUserName());
         assertEquals("#testPass1234", result.get(4).getUserPassword());
         assertTrue(result.get(4).getLinks().toString().contains("</user/4>;rel=\"self\""));
 
         assertNotNull(result.get(14).getKey());
-        assertNotNull(result.get(14).getUserLogin());
+        assertNotNull(result.get(14).getUserName());
         assertNotNull(result.get(14).getUserPassword());
         assertNotNull(result.get(14).getLinks());
         assertEquals(14, result.get(14).getKey());
-        assertEquals("testLogin14", result.get(14).getUserLogin());
+        assertEquals("testLogin14", result.get(14).getUserName());
         assertEquals("#testPass12314", result.get(14).getUserPassword());
         assertTrue(result.get(14).getLinks().toString().contains("</user/14>;rel=\"self\""));
 
         assertNotNull(result.get(5).getKey());
-        assertNotNull(result.get(5).getUserLogin());
+        assertNotNull(result.get(5).getUserName());
         assertNotNull(result.get(5).getUserPassword());
         assertNotNull(result.get(5).getLinks());
         assertEquals(5, result.get(5).getKey());
-        assertEquals("testLogin5", result.get(5).getUserLogin());
+        assertEquals("testLogin5", result.get(5).getUserName());
         assertEquals("#testPass1235", result.get(5).getUserPassword());
         assertTrue(result.get(5).getLinks().toString().contains("</user/5>;rel=\"self\""));
 
         assertNotNull(result.get(3).getKey());
-        assertNotNull(result.get(3).getUserLogin());
+        assertNotNull(result.get(3).getUserName());
         assertNotNull(result.get(3).getUserPassword());
         assertNotNull(result.get(3).getLinks());
         assertEquals(3, result.get(3).getKey());
-        assertEquals("testLogin3", result.get(3).getUserLogin());
+        assertEquals("testLogin3", result.get(3).getUserName());
         assertEquals("#testPass1233", result.get(3).getUserPassword());
         assertTrue(result.get(3).getLinks().toString().contains("</user/3>;rel=\"self\""));
     }
@@ -144,7 +144,7 @@ class UserServicesTest {
 
         vo.setKey(entity.getId());
         vo.setUserPassword(entity.getPassword());
-        vo.setUserLogin(entity.getLogin());
+        vo.setUserName(entity.getUserName());
 
         when(repository.save(entity)).thenReturn(entity);
         when(mapper.userVOToUserEntity(vo)).thenReturn(entity);
@@ -154,13 +154,13 @@ class UserServicesTest {
 
         assertNotNull(result);
         assertNotNull(result.getKey());
-        assertNotNull(result.getUserLogin());
+        assertNotNull(result.getUserName());
         assertNotNull(result.getUserPassword());
         assertNotNull(result.getLinks());
 
         assertTrue(result.toString().contains("links: [</user/1>;rel=\"self\"]"));
 
-        assertEquals("testLogin1", result.getUserLogin());
+        assertEquals("testLogin1", result.getUserName());
         assertEquals("#testPass1231", result.getUserPassword());
     }
 
@@ -171,7 +171,7 @@ class UserServicesTest {
 
         vo.setKey(entity.getId());
         vo.setUserPassword(entity.getPassword());
-        vo.setUserLogin(entity.getLogin());
+        vo.setUserName(entity.getUserName());
 
         when(mapper.userVOToUserEntity(vo)).thenReturn(entity);
         when(repository.findById(entity.getId())).thenReturn(Optional.of(entity));
@@ -182,13 +182,13 @@ class UserServicesTest {
 
         assertNotNull(result);
         assertNotNull(result.getKey());
-        assertNotNull(result.getUserLogin());
+        assertNotNull(result.getUserName());
         assertNotNull(result.getUserPassword());
         assertNotNull(result.getLinks());
 
         assertTrue(result.toString().contains("links: [</user/1>;rel=\"self\""));
 
-        assertEquals("testLogin1", result.getUserLogin());
+        assertEquals("testLogin1", result.getUserName());
         assertEquals("#testPass1231", result.getUserPassword());
     }
 

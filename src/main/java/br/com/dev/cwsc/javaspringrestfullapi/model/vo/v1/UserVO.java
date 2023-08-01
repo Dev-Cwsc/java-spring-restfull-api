@@ -15,7 +15,8 @@ public class UserVO extends RepresentationModel<UserVO> implements Serializable 
 
     @JsonProperty("id") // Renomeia o atributo exibido no objeto
     private Long key;
-    private String userLogin;
+    private String fullName;
+    private String userName;
     private String userPassword;
 
     public Long getKey() {
@@ -26,12 +27,20 @@ public class UserVO extends RepresentationModel<UserVO> implements Serializable 
         this.key = key;
     }
 
-    public String getUserLogin() {
-        return userLogin;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setUserLogin(String userLogin) {
-        this.userLogin = userLogin;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getUserPassword() {
@@ -47,12 +56,12 @@ public class UserVO extends RepresentationModel<UserVO> implements Serializable 
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        UserVO userVO = (UserVO) o;
-        return Objects.equals(getKey(), userVO.getKey()) && Objects.equals(getUserLogin(), userVO.getUserLogin()) && Objects.equals(getUserPassword(), userVO.getUserPassword());
+        UserVO vo = (UserVO) o;
+        return Objects.equals(getKey(), vo.getKey()) && Objects.equals(getFullName(), vo.getFullName()) && Objects.equals(getUserName(), vo.getUserName()) && Objects.equals(getUserPassword(), vo.getUserPassword());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getKey(), getUserLogin(), getUserPassword());
+        return Objects.hash(super.hashCode(), getKey(), getFullName(), getUserName(), getUserPassword());
     }
 }

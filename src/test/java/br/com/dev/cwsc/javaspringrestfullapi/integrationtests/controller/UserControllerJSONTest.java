@@ -73,12 +73,12 @@ public class UserControllerJSONTest extends AbstractIntegrationTest {
         assertNotNull(persistedUser);
 
         assertNotNull(persistedUser.getKey());
-        assertNotNull(persistedUser.getUserLogin());
+        assertNotNull(persistedUser.getUserName());
         assertNotNull(persistedUser.getUserPassword());
 
         assertTrue(persistedUser.getKey() > 0);
 
-        assertEquals("Richard", persistedUser.getUserLogin());
+        assertEquals("Richard", persistedUser.getUserName());
         assertEquals("Stallman", persistedUser.getUserPassword());
     }
 
@@ -140,12 +140,12 @@ public class UserControllerJSONTest extends AbstractIntegrationTest {
         assertNotNull(persistedUser);
 
         assertNotNull(persistedUser.getKey());
-        assertNotNull(persistedUser.getUserLogin());
+        assertNotNull(persistedUser.getUserName());
         assertNotNull(persistedUser.getUserPassword());
 
         assertTrue(persistedUser.getKey() > 0);
 
-        assertEquals("Richard", persistedUser.getUserLogin());
+        assertEquals("Richard", persistedUser.getUserName());
         assertEquals("Stallman", persistedUser.getUserPassword());
     }
 
@@ -181,7 +181,7 @@ public class UserControllerJSONTest extends AbstractIntegrationTest {
 
     private void mockUser() {
         user.setKey(1L);
-        user.setUserLogin("Richard");
+        user.setUserName("Richard");
         user.setUserPassword("Stallman");
     }
 }

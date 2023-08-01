@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.Objects;
 
 @Entity
-@Table(name = "device")
+@Table(name = "devices")
 public class Device implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;

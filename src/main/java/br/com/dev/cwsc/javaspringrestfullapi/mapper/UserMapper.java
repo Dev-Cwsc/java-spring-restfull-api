@@ -11,12 +11,10 @@ import java.util.List;
 public interface UserMapper {
 
     @Mapping(source = "id", target = "key")
-    @Mapping(source = "login", target = "userLogin")
     @Mapping(source = "password", target = "userPassword")
     UserVO userEntityToUserVO(User user);
 
     @Mapping(source = "key", target = "id")
-    @Mapping(source = "userLogin", target = "login")
     @Mapping(source = "userPassword", target = "password")
     User userVOToUserEntity(UserVO userVO);
 

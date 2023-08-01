@@ -64,7 +64,8 @@ public class UserServices {
         User entity = mapper.userVOToUserEntity(this.findById(userVO.getKey()));
         logger.info("Updating user...");
 
-        entity.setLogin(userVO.getUserLogin());
+        entity.setFullName(userVO.getFullName());
+        entity.setUserName(userVO.getUserName());
         entity.setPassword(userVO.getUserPassword());
 
         UserVO vo = mapper.userEntityToUserVO(repository.save(entity));

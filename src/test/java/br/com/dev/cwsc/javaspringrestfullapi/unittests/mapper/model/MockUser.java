@@ -33,7 +33,7 @@ public class MockUser {
 
     public User mockEntity(Integer number) {
         User user = new User();
-        user.setLogin("testLogin" + number.longValue());
+        user.setUserName("testLogin" + number.longValue());
         user.setPassword("#testPass123" + number.longValue());
         user.setId(number.longValue());
         return user;
@@ -41,7 +41,7 @@ public class MockUser {
 
     public UserVO mockVO(Integer number) {
         UserVO userVO = new UserVO();
-        userVO.setUserLogin("testLogin" + number.longValue());
+        userVO.setUserName("testLogin" + number.longValue());
         userVO.setUserPassword("#testPass123" + number.longValue());
         userVO.setKey(number.longValue());
         return userVO;
