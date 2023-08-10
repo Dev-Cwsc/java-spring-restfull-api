@@ -1,5 +1,10 @@
 cors: # Define quais endpoints podem acessar os métodos da API
-  originPatterns: http://localhost:3000,http://localhost:8080,testDeviceScript
+  originPatterns: http://localhost:3000,http://localhost:8080,
+security:
+  jwt:
+    token:
+      secret-key: 97cwsc97
+      expire-length: 3600000 # Define o tempo de duração do token para uma hora
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver

@@ -1,14 +1,19 @@
 package br.com.dev.cwsc.javaspringrestfullapi.model;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 @Entity // Annotation que especifica que essa classe é uma entidade do banco de dados
 @Table(name = "users")
-public class User implements Serializable {
+public class User implements UserDetails, Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -36,8 +41,63 @@ public class User implements Serializable {
     @Column(name = "credentials_non_expired")
     private Boolean credentialsNonExpired;
 
-    @Column(name = "enabled")
     private Boolean enabled;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_permission", joinColumns = {@JoinColumn(name = "id_user")},
+            inverseJoinColumns = {@JoinColumn(name = "id_permission")}
+    )
+    private List<Permission> permissions;
+
+    public User() {
+    }
+
+    public List<String> getRoles() {
+        List<String> roles = new ArrayList<>();
+        for (Permission permission : permissions) {
+            roles.add(permission.getDescription());
+        }
+        return roles;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.permissions;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.userName;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return this.accountNonExpired;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return this.accountNonLocked;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return this.credentialsNonExpired;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.enabled;
+    }
 
     public long getId() {
         return id;
@@ -61,14 +121,6 @@ public class User implements Serializable {
 
     public void setUserName(String userName) {
         this.userName = userName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public Boolean getAccountNonExpired() {
@@ -103,16 +155,40 @@ public class User implements Serializable {
         this.enabled = enabled;
     }
 
+    public List<Permission> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(List<Permission> permissions) {
+        this.permissions = permissions;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return getId() == user.getId() && Objects.equals(getFullName(), user.getFullName()) && Objects.equals(getUserName(), user.getUserName()) && Objects.equals(getPassword(), user.getPassword()) && Objects.equals(getAccountNonExpired(), user.getAccountNonExpired()) && Objects.equals(getAccountNonLocked(), user.getAccountNonLocked()) && Objects.equals(getCredentialsNonExpired(), user.getCredentialsNonExpired()) && Objects.equals(getEnabled(), user.getEnabled());
+        return getId() == user.getId() && Objects.equals(getFullName(),
+                user.getFullName()) && Objects.equals(getUserName(),
+                user.getUserName()) && Objects.equals(getPassword(),
+                user.getPassword()) && Objects.equals(isAccountNonExpired(),
+                user.isAccountNonExpired()) && Objects.equals(isAccountNonLocked(),
+                user.isAccountNonLocked()) && Objects.equals(isCredentialsNonExpired(),
+                user.isCredentialsNonExpired()) && Objects.equals(isEnabled(),
+                user.isEnabled()) && Objects.equals(getPermissions(),
+                user.getPermissions());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getFullName(), getUserName(), getPassword(), getAccountNonExpired(), getAccountNonLocked(), getCredentialsNonExpired(), getEnabled());
+        return Objects.hash(getId(),
+                getFullName(),
+                getUserName(),
+                getPassword(),
+                isAccountNonExpired(),
+                isAccountNonLocked(),
+                isCredentialsNonExpired(),
+                isEnabled(),
+                getPermissions());
     }
 }

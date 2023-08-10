@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController // Annotation do Spring. Sinaliza que a classe é um controller
-@RequestMapping("/user")
+@RequestMapping("/api/users")
 @Tag(name = "Users", description = "Endpoints for managing users")
 public class UserController {
     @Autowired

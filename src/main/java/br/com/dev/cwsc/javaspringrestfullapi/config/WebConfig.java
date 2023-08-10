@@ -16,7 +16,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     private static final MediaType MEDIA_TYPE_APPLICATION_YAML = MediaType.valueOf("application/x-yaml");
 
-    // Busca o valor da variável cors.originPatterns definido no arquivo application.yml
+    // Busca o valor da variável definido no arquivo application.yml
     @Value("${cors.originPatterns:default}") // Caso não seja especificado um valor no arquivo, retorna default
     private String corsOriginPatterns = "";
 

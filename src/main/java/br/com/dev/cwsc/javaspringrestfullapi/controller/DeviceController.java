@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/device")
+@RequestMapping("/api/devices")
 @Tag(name = "Devices", description = "Endpoints for managing devices")
 public class DeviceController {
     @Autowired

@@ -107,11 +107,22 @@ public class Device implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Device device = (Device) o;
-        return getId() == device.getId() && Double.compare(device.getMeasurementCH1(), getMeasurementCH1()) == 0 && Double.compare(device.getMeasurementCH2(), getMeasurementCH2()) == 0 && isLastCH1Status() == device.isLastCH1Status() && isLastCH2Status() == device.isLastCH2Status() && Objects.equals(getDeviceName(), device.getDeviceName()) && Objects.equals(getInstallationName(), device.getInstallationName()) && Objects.equals(getLastUpdate(), device.getLastUpdate());
+        return getId() == device.getId() && Double.compare(device.getMeasurementCH1(),
+                getMeasurementCH1()) == 0 && Double.compare(device.getMeasurementCH2(),
+                getMeasurementCH2()) == 0 && isLastCH1Status() == device.isLastCH1Status() && isLastCH2Status() == device.isLastCH2Status() && Objects.equals(getDeviceName(),
+                device.getDeviceName()) && Objects.equals(getInstallationName(), device.getInstallationName()) && Objects.equals(getLastUpdate(),
+                device.getLastUpdate());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getDeviceName(), getInstallationName(), getMeasurementCH1(), getMeasurementCH2(), isLastCH1Status(), isLastCH2Status(), getLastUpdate());
+        return Objects.hash(getId(),
+                getDeviceName(),
+                getInstallationName(),
+                getMeasurementCH1(),
+                getMeasurementCH2(),
+                isLastCH1Status(),
+                isLastCH2Status(),
+                getLastUpdate());
     }
 }

@@ -8,9 +8,17 @@ import br.com.dev.cwsc.javaspringrestfullapi.model.User;
 import br.com.dev.cwsc.javaspringrestfullapi.model.vo.v1.UserVO;
 import br.com.dev.cwsc.javaspringrestfullapi.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -18,7 +26,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
 // Annotation do Spring. Sinaliza que o objeto pode ser injetado em tempo de execução (não é necessário instanciar)
-public class UserServices {
+public class UserServices implements UserDetailsService {
     private final Logger logger = Logger.getLogger(UserServices.class.getName());
 
     @Autowired
@@ -27,15 +35,20 @@ public class UserServices {
     @Autowired
     private UserMapper mapper;
 
-    public List<UserVO> findAll() {
-        logger.info("Finding all users...");
+    // @Autowired -> É possível fazer a injeção de dependências no construtor, tornando o atributo required, porém isso fere o padrão SOLID
+    public UserServices(UserRepository repository) {
+        this.repository = repository;
+    }
 
-        List<UserVO> userVOs = mapper.userEntityListToUserVOList(repository.findAll());
-
-        userVOs.forEach( // Adiciona um link de caminho para o próprio objeto (HATEOAS)
-                u -> u.add(linkTo(methodOn(UserController.class).findById(u.getKey())).withSelfRel())
-        );
-        return userVOs;
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        logger.info("Finding a user by username " + username + "...");
+        var user = repository.findByUsername(username);
+        if (user != null) {
+            return user;
+        } else {
+            throw new UsernameNotFoundException("User not found by username " + username + "!");
+        }
     }
 
     public UserVO findById(Long id) {
@@ -48,10 +61,22 @@ public class UserServices {
         return vo;
     }
 
+    public List<UserVO> findAll() {
+        logger.info("Finding all users...");
+
+        List<UserVO> userVOs = mapper.userEntityListToUserVOList(repository.findAll());
+
+        userVOs.forEach( // Adiciona um link de caminho para o próprio objeto (HATEOAS)
+                u -> u.add(linkTo(methodOn(UserController.class).findById(u.getKey())).withSelfRel())
+        );
+        return userVOs;
+    }
+
     public UserVO create(UserVO userVO) {
         if (userVO == null) throw new RequiredObjectIsNullException();
 
         logger.info("Creating user...");
+        userVO.setUserPassword(encodePassword(userVO.getUserPassword()));
 
         UserVO vo = mapper.userEntityToUserVO(repository.save(mapper.userVOToUserEntity(userVO)));
         vo.add(linkTo(methodOn(UserController.class).findById(vo.getKey())).withSelfRel());
@@ -66,7 +91,7 @@ public class UserServices {
 
         entity.setFullName(userVO.getFullName());
         entity.setUserName(userVO.getUserName());
-        entity.setPassword(userVO.getUserPassword());
+        entity.setPassword(encodePassword(userVO.getUserPassword()));
 
         UserVO vo = mapper.userEntityToUserVO(repository.save(entity));
         vo.add(linkTo(methodOn(UserController.class).findById(vo.getKey())).withSelfRel());
@@ -80,5 +105,19 @@ public class UserServices {
                 .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
 
         repository.delete(entity);
+    }
+
+    private String encodePassword(String password) {
+        Map<String, PasswordEncoder> encoders = new HashMap<>();
+        Pbkdf2PasswordEncoder pbkdf2Encoder =
+                new Pbkdf2PasswordEncoder(
+                        "", 8, 185000,
+                        Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA256);
+
+        encoders.put("pbkdf2", pbkdf2Encoder);
+        DelegatingPasswordEncoder passwordEncoder = new DelegatingPasswordEncoder("pbkdf2", encoders);
+        passwordEncoder.setDefaultPasswordEncoderForMatches(pbkdf2Encoder);
+
+        return passwordEncoder.encode(password).substring("{pbkdf2}".length());
     }
 }
