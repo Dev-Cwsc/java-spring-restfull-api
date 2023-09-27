@@ -5,4 +5,6 @@ VALUES ('leandro', 'Leandro Costa', '19bbf735b27066f2f145e602624e1b24a3fbc54cd5d
        ('flavio', 'Flavio Costa', '75ec349c1b0ef4ee7b249d0b83ae4861853f3aa77bce8c4b15f28cd43c6424ab4f29df431831bb0d',
         b'1', b'1', b'1', b'1'),
        ('carlos', 'Carlos Willian', '9c30b8035ebbf54c748d8937983affc9df598b18a35bcd747133972fcb0cb3836177d20e1f721643',
+        b'1', b'1', b'1', b'1'),
+       ('admin', 'Carlos Willian', '1c959e90883c1291efeda0b4ec2d39dbe01690794173416910c2ecc7ecf00c12f3fbfaa2014d6b5a',
         b'1', b'1', b'1', b'1');

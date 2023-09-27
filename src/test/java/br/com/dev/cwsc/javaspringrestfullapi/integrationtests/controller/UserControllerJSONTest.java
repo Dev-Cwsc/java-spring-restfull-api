@@ -1,10 +1,12 @@
 package br.com.dev.cwsc.javaspringrestfullapi.integrationtests.controller;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import br.com.dev.cwsc.javaspringrestfullapi.integrationtests.model.vo.security.AccountCredentialsVO;
+import br.com.dev.cwsc.javaspringrestfullapi.integrationtests.model.vo.security.TokenVO;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -26,6 +28,12 @@ import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.specification.RequestSpecification;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(OrderAnnotation.class)
@@ -44,20 +52,41 @@ public class UserControllerJSONTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @Order(1)
-    public void testCreate() throws JsonMappingException, JsonProcessingException {
-        mockUser();
+    @Order(0)
+    public void testAuthorization() throws JsonMappingException, JsonProcessingException {
+        AccountCredentialsVO userCredentials = new AccountCredentialsVO("carlos", "#carlos123");
+
+        var accessToken = given()
+                .basePath("/auth/signin")
+                .port(TestConfigs.SERVER_PORT)
+                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .body(userCredentials)
+                .when()
+                .post()
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .as(TokenVO.class)
+                .getAccessToken();
 
         specification = new RequestSpecBuilder()
-                .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_TEST)
-                .setBasePath("/user")
+                .addHeader(TestConfigs.HEADER_PARAM_AUTHORIZATION, "Bearer " + accessToken)
+                .setBasePath("/api/users")
                 .setPort(TestConfigs.SERVER_PORT)
                 .addFilter(new RequestLoggingFilter(LogDetail.ALL))
                 .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
                 .build();
+    }
+
+    @Test
+    @Order(1)
+    public void testCreate() throws JsonMappingException, JsonProcessingException {
+        mockUser();
 
         var content = given().spec(specification)
                 .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .header(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_TEST)
                 .body(user)
                 .when()
                 .post()
@@ -87,16 +116,9 @@ public class UserControllerJSONTest extends AbstractIntegrationTest {
     public void testCreateWithWrongOrigin() throws JsonMappingException, JsonProcessingException {
         mockUser();
 
-        specification = new RequestSpecBuilder()
-                .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_UNKNOWN)
-                .setBasePath("/user")
-                .setPort(TestConfigs.SERVER_PORT)
-                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
-                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-                .build();
-
         var content = given().spec(specification)
                 .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .header(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_UNKNOWN)
                 .body(user)
                 .when()
                 .post()
@@ -115,16 +137,9 @@ public class UserControllerJSONTest extends AbstractIntegrationTest {
     public void testFindById() throws JsonMappingException, JsonProcessingException {
         mockUser();
 
-        specification = new RequestSpecBuilder()
-                .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_TEST)
-                .setBasePath("/user")
-                .setPort(TestConfigs.SERVER_PORT)
-                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
-                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-                .build();
-
         var content = given().spec(specification)
                 .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .header(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_TEST)
                 .pathParam("id", user.getKey())
                 .when()
                 .get("{id}")
@@ -146,25 +161,28 @@ public class UserControllerJSONTest extends AbstractIntegrationTest {
         assertTrue(persistedUser.getKey() > 0);
 
         assertEquals("Richard", persistedUser.getUserName());
-        assertEquals("Stallman", persistedUser.getUserPassword());
-    }
 
+        Map<String, PasswordEncoder> encoders = new HashMap<>();
+        Pbkdf2PasswordEncoder pbkdf2Encoder =
+                new Pbkdf2PasswordEncoder(
+                        "", 8, 185000,
+                        Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA256);
+
+        encoders.put("pbkdf2", pbkdf2Encoder);
+        DelegatingPasswordEncoder passwordEncoder = new DelegatingPasswordEncoder("pbkdf2", encoders);
+        passwordEncoder.setDefaultPasswordEncoderForMatches(pbkdf2Encoder);
+
+        assertTrue(passwordEncoder.matches("Stallman", user.getUserPassword()));
+    }
 
     @Test
     @Order(4)
     public void testFindByIdWithWrongOrigin() throws JsonMappingException, JsonProcessingException {
         mockUser();
 
-        specification = new RequestSpecBuilder()
-                .addHeader(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_UNKNOWN)
-                .setBasePath("/user")
-                .setPort(TestConfigs.SERVER_PORT)
-                .addFilter(new RequestLoggingFilter(LogDetail.ALL))
-                .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
-                .build();
-
         var content = given().spec(specification)
                 .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .header(TestConfigs.HEADER_PARAM_ORIGIN, TestConfigs.ORIGIN_UNKNOWN)
                 .pathParam("id", user.getKey())
                 .when()
                 .get("{id}")

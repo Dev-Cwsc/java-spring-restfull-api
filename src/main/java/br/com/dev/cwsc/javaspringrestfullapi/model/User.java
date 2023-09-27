@@ -50,6 +50,10 @@ public class User implements UserDetails, Serializable {
     private List<Permission> permissions;
 
     public User() {
+        this.accountNonExpired = true;
+        this.accountNonLocked = true;
+        this.credentialsNonExpired = true;
+        this.enabled = true;
     }
 
     public List<String> getRoles() {

@@ -25,10 +25,10 @@ import java.util.List;
 public class JwtTokenProvider {
     // Busca o valor no arquivo application.yml
     @Value("${security.jwt.token.secret-key:secret}")
-    private String secretKey = "secret";
+    private String secretKey;
 
     @Value("${security.jwt.token.expire-length:3600000}")
-    private long validityInMilliseconds = 3600000; // 1h
+    private long validityInMilliseconds; // 1h
 
     @Autowired
     private UserDetailsService userDetailsService;

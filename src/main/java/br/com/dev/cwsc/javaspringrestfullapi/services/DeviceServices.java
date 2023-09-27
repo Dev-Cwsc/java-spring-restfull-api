@@ -79,7 +79,7 @@ public class DeviceServices {
     public DeviceVO deviceDataUpdate(DeviceVO deviceVO) {
         if (deviceVO == null) throw new RequiredObjectIsNullException();
 
-        Device entity = mapper.deviceVOToDeviceEntity(deviceVO);
+        Device entity = mapper.deviceVOToDeviceEntity(this.findById(deviceVO.getKey()));
         logger.info("Updating device data...");
 
         entity.setDeviceName(deviceVO.getDevice());

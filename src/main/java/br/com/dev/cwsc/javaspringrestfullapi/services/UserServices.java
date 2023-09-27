@@ -8,17 +8,14 @@ import br.com.dev.cwsc.javaspringrestfullapi.model.User;
 import br.com.dev.cwsc.javaspringrestfullapi.model.vo.v1.UserVO;
 import br.com.dev.cwsc.javaspringrestfullapi.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -28,6 +25,10 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 // Annotation do Spring. Sinaliza que o objeto pode ser injetado em tempo de execução (não é necessário instanciar)
 public class UserServices implements UserDetailsService {
     private final Logger logger = Logger.getLogger(UserServices.class.getName());
+
+    @Lazy
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserRepository repository;
@@ -76,10 +77,16 @@ public class UserServices implements UserDetailsService {
         if (userVO == null) throw new RequiredObjectIsNullException();
 
         logger.info("Creating user...");
-        userVO.setUserPassword(encodePassword(userVO.getUserPassword()));
+
+        String rawPassword = userVO.getUserPassword();
+
+        userVO.setUserPassword(passwordEncoder.encode(userVO.getUserPassword()).substring("{pbkdf2}".length()));
 
         UserVO vo = mapper.userEntityToUserVO(repository.save(mapper.userVOToUserEntity(userVO)));
+
+        vo.setUserPassword(rawPassword);
         vo.add(linkTo(methodOn(UserController.class).findById(vo.getKey())).withSelfRel());
+
         return vo;
     }
 
@@ -89,12 +96,17 @@ public class UserServices implements UserDetailsService {
         User entity = mapper.userVOToUserEntity(this.findById(userVO.getKey()));
         logger.info("Updating user...");
 
+        String rawPassword = userVO.getUserPassword();
+
         entity.setFullName(userVO.getFullName());
         entity.setUserName(userVO.getUserName());
-        entity.setPassword(encodePassword(userVO.getUserPassword()));
+        entity.setPassword(passwordEncoder.encode(userVO.getUserPassword()).substring("{pbkdf2}".length()));
 
         UserVO vo = mapper.userEntityToUserVO(repository.save(entity));
+
+        vo.setUserPassword(rawPassword);
         vo.add(linkTo(methodOn(UserController.class).findById(vo.getKey())).withSelfRel());
+
         return vo;
     }
 
@@ -105,19 +117,5 @@ public class UserServices implements UserDetailsService {
                 .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
 
         repository.delete(entity);
-    }
-
-    private String encodePassword(String password) {
-        Map<String, PasswordEncoder> encoders = new HashMap<>();
-        Pbkdf2PasswordEncoder pbkdf2Encoder =
-                new Pbkdf2PasswordEncoder(
-                        "", 8, 185000,
-                        Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA256);
-
-        encoders.put("pbkdf2", pbkdf2Encoder);
-        DelegatingPasswordEncoder passwordEncoder = new DelegatingPasswordEncoder("pbkdf2", encoders);
-        passwordEncoder.setDefaultPasswordEncoderForMatches(pbkdf2Encoder);
-
-        return passwordEncoder.encode(password).substring("{pbkdf2}".length());
     }
 }
